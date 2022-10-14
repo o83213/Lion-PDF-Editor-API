@@ -4,6 +4,7 @@ const fileUpload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
+const helmet = require("helmet");
 // custom router
 const pdfRoutes = require("./routes/pdfRoute");
 // initialize server
@@ -27,12 +28,14 @@ app.use("/data", express.static(path.join(__dirname, "data"))); // reveal the da
 // custom pdf routes
 app.use(pdfRoutes);
 //
+app.use(helmet());
+//
 mongoose
   .connect(
-    "mongodb+srv://o83213:eE14011106@cluster0.p6lnq.mongodb.net/pdf-signature?retryWrites=true",
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.p6lnq.mongodb.net/pdf-signature?retryWrites=true`,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then((result) => {
-    app.listen(8080);
+    app.listen(process.env.PORT || 8080);
   })
   .catch((err) => console.log(err));
